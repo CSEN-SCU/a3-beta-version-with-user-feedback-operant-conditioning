@@ -1,0 +1,27 @@
+body {
+  width: 200px;
+  margin: 0px;
+}
+
+.headerBG {
+  display: flex;
+  background-color: lightblue;
+  width: 100%;
+}
+
+.appName {
+  padding: 5px;
+}
+
+.pageName {
+  padding: 5px;
+}
+
+.hamburger {
+  padding: 5px;
+}
+
+h1 {
+  margin-top: 10px;
+  padding: 30px;
+}
