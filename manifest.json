@@ -5,7 +5,7 @@
   "version": "1.0",
   "action": {
     "default_popup": "popup.html",
-    "default_icon": "icon48.png"
+    "default_icon": "./assets/heaven.png"
   },
   "background": {
     "service_worker": "background.js"
@@ -24,18 +24,6 @@
     "*://*.instagram.com/*",
     "*://*.linkedin.com/*",
     "https://www.youtube.com/*"
-  ],
-  "content_scripts": [
-    {
-      "js": ["helloworld.js"],
-      "matches": [
-        "https://www.youtube.com/*",
-        "*://*.facebook.com/*",
-        "*://*.twitter.com/*",
-        "*://*.instagram.com/*",
-        "*://*.linkedin.com/*"
-      ]
-    }
   ],
   "web_accessible_resources": [
     {

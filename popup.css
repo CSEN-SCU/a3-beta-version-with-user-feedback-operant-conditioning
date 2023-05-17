@@ -1,6 +1,61 @@
-button {
+body {
+  width: 290px;
+  height: 200px;
+  margin: 0;
+  background-image: url('./assets/popupBackground.png');
+}
+
+.header {
+  display: flex;
+}
+
+.headerImage {
+  height: 50px;
+}
+
+.appTitle {
+  font-size: 22px;
+  font-weight: bold;
+  padding-top: 8px;
+  margin: 0px 13px;
+  color: black;
+}
+
+.startButton {
   display: block;
-  width: 200px;
-  height: 35px;
-  margin: 10px auto;
+  width: 90px;
+  height: 30px;
+  margin: 25px 100px 0px 100px;
+  border: 2px solid #1a1a1a;
+  border-radius: 10px;
+  color: black;
+  background-color: #8dc95f;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.startButton:hover {
+  background-color: #eded83;
+  box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+  transform: translateY(-2px);
+}
+
+.stopButton {
+  display: block;
+  width: 90px;
+  height: 30px;
+  margin: -30px 100px;
+  border: 2px solid #1a1a1a;
+  border-radius: 10px;
+  color: white;
+  background-color: #000000;
+  font-weight: bold;
+  cursor: pointer;
+  visibility: hidden;
+}
+
+.stopButton:hover {
+  background-color: #ff0000;
+  box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+  transform: translateY(-2px);
 }
