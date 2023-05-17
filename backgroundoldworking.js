@@ -1,11 +1,5 @@
 console.log("background.js loaded");
 
-function functionToInject() {
-    let audio = new Audio(chrome.runtime.getURL('sounds/death_sound.mp3'));
-    audio.play();
-}
-
-
 const socialMediaSites = [
     'www.facebook.com', 
     'www.twitter.com', 
@@ -23,7 +17,7 @@ const socialMediaSites = [
     'www.disneyplus.com',
     'www.amazon.com/Prime-Video',
     'www.spotify.com'
-];
+  ];  
 
 const affirmations = [
   "That's the spirit! Keep up the good work, dearie!",
@@ -51,91 +45,80 @@ const negativeMessages = [
   "Whatsapp with all this distraction? Get back to your task!"
 ];
 
-let state = 'off';
-let currentSite = null;
 let timer = null;
+let state = 'off';
+let currentSite = '';
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.command === 'start') {
     state = 'on';
-    console.log('Start button clicked');
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-      chrome.tabs.sendMessage(tabs[0].id, { message: "Grandma is rooting for you. Let's start!" });
-    });
+    console.log('Extension started');
   } else if (request.command === 'stop') {
     state = 'off';
-    console.log('Stop button clicked');
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-      chrome.tabs.sendMessage(tabs[0].id, { message: "I'm so proud of you." });
-    });
     if (timer) {
       clearTimeout(timer);
-      timer = null;
     }
+    console.log('Extension stopped');
   }
 });
 
-// Listen for updates on any tab.
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  // If the extension is off, we do nothing.
   if (state !== 'on') {
     return;
   }
-  // Only act on completed loading.
+
   if (changeInfo.status === 'complete') {
-    // Parse the URL to get the hostname of the site.
     const site = new URL(tab.url).hostname;
 
-    // Check if the site is in our list of social media sites.
     if (socialMediaSites.includes(site)) {
-      // Only send messages if the site has changed.
       if (currentSite !== site) {
-        // Send a negative message immediately.
-        let message = negativeMessages[Math.floor(Math.random() * negativeMessages.length)];
+        state = 'negative';
+        const message = negativeMessages[Math.floor(Math.random() * negativeMessages.length)];
         console.log('Sending negative message:', message);
-        chrome.tabs.sendMessage(tabId, { message: message });
+        chrome.notifications.create({
+          type: 'basic',
+          iconUrl: 'images/icon128.png',
+          title: 'Angry Grandma',
+          message: message
+        });
 
-        // Clear any existing timer.
         if (timer) {
           clearTimeout(timer);
         }
-
-        // Set a timer to send another negative message after 10 seconds.
-        setTimeout(() => {
-          message = negativeMessages[Math.floor(Math.random() * negativeMessages.length)];
-          console.log('Sending negative message after 10 seconds:', message);
-          chrome.tabs.sendMessage(tabId, { message: message });
-        }, 10000); // 10 seconds
-
-          // Sending third negative message after 40 seconds
-          setTimeout(() => {
-            const message = negativeMessages[Math.floor(Math.random() * negativeMessages.length)];
-            console.log('Sending negative message:', message);
-            chrome.tabs.sendMessage(tabId, { message: message });
-          }, 40000);
-
-          // Send final message after 60 seconds
-          setTimeout(() => {
-            chrome.tabs.sendMessage(tabId, { message: "Grandma has died...." });
-            console.log('Grandma died message sent');
-            
-            // Speak the final message
-            chrome.tts.speak('Grandma has died.');
-          }, 60000);
+        let timeSpent = 0;
+        timer = setInterval(() => {
+          timeSpent++;
+          if (timeSpent === 1) {
+            chrome.notifications.create({
+              type: 'basic',
+              iconUrl: 'images/icon128.png',
+              title: 'Angry Grandma',
+              message: 'Charge!'
+            });
+            console.log('Sent Charge! message');
+            clearTimeout(timer);
+          }
+        }, 60000); // 1 minute
       }
     } else {
-      // If the site is not a social media site and there's no timer currently set,
-      // set a timer to send a positive message after 60 seconds.
-      if (!timer) {
-        timer = setTimeout(() => {
+      state = 'positive';
+      if (timer) {
+        clearTimeout(timer);
+      }
+      timer = setTimeout(() => {
+        if (state === 'positive') {
           const message = affirmations[Math.floor(Math.random() * affirmations.length)];
           console.log('Sending positive message:', message);
-          chrome.tabs.sendMessage(tabId, { message: message });
-          timer = null;
-        }, 60000);
-      }
+          chrome.notifications.create({
+            type: 'basic',
+            iconUrl: 'images/icon128.png',
+            title: 'Angry Grandma',
+            message: message
+          });
+        }
+      }, 60000); // 1 minute
     }
-    // Update the current site.
+
     currentSite = site;
   }
 });
