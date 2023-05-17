@@ -4,12 +4,20 @@
   "description": "COEN 296A A3",
   "version": "1.0",
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "default_icon": "icon48.png"
   },
   "background": {
     "service_worker": "background.js"
   },
-  "permissions": ["storage", "activeTab", "scripting", "notifications", "tabs", "tts"],
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "notifications",
+    "tabs",
+    "tts"
+  ],
   "host_permissions": [
     "*://*.facebook.com/*",
     "*://*.twitter.com/*",
