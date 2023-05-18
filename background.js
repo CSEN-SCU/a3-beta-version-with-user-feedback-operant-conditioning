@@ -140,6 +140,14 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
             affirmations[Math.floor(Math.random() * affirmations.length)];
           console.log('Sending positive message:', message);
           chrome.tabs.sendMessage(tabId, { message: message });
+          /*
+          chrome.notifications.create('', {
+            title: 'Good Job!!',
+            message: message,
+            iconUrl: '/asset/good.png',
+            type: 'basic'
+          });      
+          */
           chrome.scripting.executeScript({
             target: { tabId: tabId },
             file: ['content.js'],
