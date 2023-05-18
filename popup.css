@@ -7,6 +7,7 @@ body {
 
 .header {
   display: flex;
+  justify-content: flex-end;
 }
 
 .headerImage {
@@ -17,7 +18,7 @@ body {
   font-size: 22px;
   font-weight: bold;
   padding-top: 8px;
-  margin: 0px 13px;
+  margin: 0px 15px;
   color: black;
 }
 
@@ -58,4 +59,9 @@ body {
   background-color: #ff0000;
   box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
   transform: translateY(-2px);
+}
+
+.footerImage {
+  height: 50px;
+  margin-top: 73px;
 }
