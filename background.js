@@ -179,7 +179,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
                     chrome.notifications.create('', {
                       title: 'SHAME ON YOU!',
                       message: 'Grandma has died....',
-                      iconUrl: '/assets/bad2.png',
+                      iconUrl: '/assets/heaven.png',
                       type: 'basic',
                     });
 
@@ -208,12 +208,6 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
             iconUrl: '/assets/good.png',
             type: 'basic',
           });
-          /*
-          chrome.scripting.executeScript({
-              target: { tabId: tabId },
-              files: ['content.js'],
-            })
-            .then(() => console.log('injected'));*/
           timer = null;
         }, clock);
       }
