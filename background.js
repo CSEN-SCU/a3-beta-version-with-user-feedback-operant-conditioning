@@ -133,52 +133,64 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
         // Set a timer to send another negative message after 10 seconds.
         setTimeout(() => {
-          message =
-            negativeMessages[
-              Math.floor(Math.random() * negativeMessages.length)
-            ];
-          console.log('Sending negative message after 10 seconds:', message);
-          chrome.tabs.sendMessage(tabId, { message: message });
-          //used https://developer.chrome.com/docs/extensions/reference/notifications/ for help on syntax
-          chrome.notifications.create('', {
-            title: 'GET OFF ALREADY!!',
-            message: message,
-            iconUrl: '/assets/bad.png',
-            type: 'basic',
-          });
+          if (currentSite === site) {
+            message =
+              negativeMessages[
+                Math.floor(Math.random() * negativeMessages.length)
+              ];
+            console.log('Sending negative message after 10 seconds:', message);
+            chrome.tabs.sendMessage(tabId, { message: message });
+            //used https://developer.chrome.com/docs/extensions/reference/notifications/ for help on syntax
+            chrome.notifications.create('', {
+              title: 'GET OFF ALREADY!!',
+              message: message,
+              iconUrl: '/assets/bad.png',
+              type: 'basic',
+            });
+
+            // Sending third negative message after 40 seconds
+            setTimeout(() => {
+              if (currentSite === site) {
+                const message =
+                  negativeMessages[
+                    Math.floor(Math.random() * negativeMessages.length)
+                  ];
+                console.log(
+                  'Sending negative message after 40 seconds:',
+                  message
+                );
+                chrome.tabs.sendMessage(tabId, { message: message });
+                //used https://developer.chrome.com/docs/extensions/reference/notifications/ for help on syntax
+                chrome.notifications.create('', {
+                  title: 'SIGH Do you HATE ME?!',
+                  message: message,
+                  iconUrl: '/assets/bad.png',
+                  type: 'basic',
+                });
+
+                // Send final message after 60 seconds
+                setTimeout(() => {
+                  if (currentSite === site) {
+                    chrome.tabs.sendMessage(tabId, {
+                      message: 'Grandma has died....',
+                    });
+                    console.log('Grandma died message sent');
+                    //used https://developer.chrome.com/docs/extensions/reference/notifications/ for help on syntax
+                    chrome.notifications.create('', {
+                      title: 'SHAME ON YOU!',
+                      message: 'Grandma has died....',
+                      iconUrl: '/assets/bad2.png',
+                      type: 'basic',
+                    });
+
+                    // Speak the final message
+                    chrome.tts.speak('Grandma has died.');
+                  }
+                }, 60000); // 60 seconds
+              }
+            }, 40000); // 40 seconds
+          }
         }, 10000); // 10 seconds
-
-        // Sending third negative message after 40 seconds
-        setTimeout(() => {
-          const message =
-            negativeMessages[
-              Math.floor(Math.random() * negativeMessages.length)
-            ];
-          console.log('Sending negative message after 40 seconds:', message);
-          chrome.tabs.sendMessage(tabId, { message: message });
-          //used https://developer.chrome.com/docs/extensions/reference/notifications/ for help on syntax
-          chrome.notifications.create('', {
-            title: 'SIGH Do you HATE ME?!',
-            message: message,
-            iconUrl: '/assets/bad.png',
-            type: 'basic',
-          });
-        }, 40000); // 40 seconds
-        // Send final message after 60 seconds
-        setTimeout(() => {
-          chrome.tabs.sendMessage(tabId, { message: 'Grandma has died....' });
-          console.log('Grandma died message sent');
-          //used https://developer.chrome.com/docs/extensions/reference/notifications/ for help on syntax
-          chrome.notifications.create('', {
-            title: 'SHAME ON YOU!',
-            message: 'Grandma has died....',
-            iconUrl: '/assets/bad2.png',
-            type: 'basic',
-          });
-
-          // Speak the final message
-          chrome.tts.speak('Grandma has died.');
-        }, 60000); // 60 seconds
       }
     } else {
       // If the site is not a social media site and there's no timer currently set,
