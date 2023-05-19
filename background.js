@@ -57,8 +57,10 @@ let timer = null;
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.command === 'start') {
     state = 'on';
+    //let store = sessionStorage.setItem("state","on");
     console.log('Start button clicked');
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      console.log(tabs);
       chrome.tabs.sendMessage(tabs[0].id, {
         message: "Grandma is rooting for you. Let's start!",
       });
@@ -67,6 +69,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     state = 'off';
     console.log('Stop button clicked');
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      console.log(tabs);
       chrome.tabs.sendMessage(tabs[0].id, { message: "I'm so proud of you." });
     });
     if (timer) {
@@ -82,6 +85,9 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (state !== 'on') {
     return;
   }
+
+  let clock = Math.floor(Math.random() * (900000 - 300000) + 300000);
+
   // Only act on completed loading.
   if (changeInfo.status === 'complete') {
     // Parse the URL to get the hostname of the site.
@@ -96,6 +102,12 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
           negativeMessages[Math.floor(Math.random() * negativeMessages.length)];
         console.log('Sending negative message:', message);
         chrome.tabs.sendMessage(tabId, { message: message });
+        chrome.notifications.create('', {
+          title: 'HOW DARE YOU',
+          message: 'Grandma has died....',
+          iconUrl: '/assets/bad2.png',
+          type: 'basic'
+        });
 
         // Clear any existing timer.
         if (timer) {
@@ -110,6 +122,12 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
             ];
           console.log('Sending negative message after 10 seconds:', message);
           chrome.tabs.sendMessage(tabId, { message: message });
+          chrome.notifications.create('', {
+            title: 'HOW DARE YOU',
+            message: 'Grandma has died....',
+            iconUrl: '/assets/bad2.png',
+            type: 'basic'
+          });
         }, 10000); // 10 seconds
 
         // Sending third negative message after 40 seconds
@@ -120,12 +138,24 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
             ];
           console.log('Sending negative message:', message);
           chrome.tabs.sendMessage(tabId, { message: message });
+          chrome.notifications.create('', {
+            title: 'HOW DARE YOU',
+            message: 'Grandma has died....',
+            iconUrl: '/assets/bad2.png',
+            type: 'basic'
+          });
         }, 40000);
 
         // Send final message after 60 seconds
         setTimeout(() => {
           chrome.tabs.sendMessage(tabId, { message: 'Grandma has died....' });
           console.log('Grandma died message sent');
+          chrome.notifications.create('', {
+            title: 'HOW DARE YOU',
+            message: 'Grandma has died....',
+            iconUrl: '/assets/bad2.png',
+            type: 'basic'
+          });
 
           // Speak the final message
           chrome.tts.speak('Grandma has died.');
@@ -140,20 +170,20 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
             affirmations[Math.floor(Math.random() * affirmations.length)];
           console.log('Sending positive message:', message);
           chrome.tabs.sendMessage(tabId, { message: message });
-          /*
+          
           chrome.notifications.create('', {
             title: 'Good Job!!',
             message: message,
-            iconUrl: '/asset/good.png',
+            iconUrl: '/assets/good.png',
             type: 'basic'
           });      
-          */
+          /*
           chrome.scripting.executeScript({
             target: { tabId: tabId },
             file: ['content.js'],
           });
-          timer = null;
-        }, 60000);
+          timer = null;*/
+        }, clock);
       }
     }
     // Update the current site.
