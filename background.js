@@ -60,21 +60,37 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     //let store = sessionStorage.setItem("state","on");
     console.log('Start button clicked');
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      console.log(tabs);
       chrome.tabs.sendMessage(tabs[0].id, {
         message: "Grandma is rooting for you. Let's start!",
+      });
+      //used https://developer.chrome.com/docs/extensions/reference/notifications/ for help on syntax
+      chrome.notifications.create('', {
+        title: "Let's begin!!",
+        message: "Grandma is rooting for you. Let's start!",
+        iconUrl: '/assets/start.png',
+        type: 'basic',
       });
     });
   } else if (request.command === 'stop') {
     state = 'off';
     console.log('Stop button clicked');
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      console.log(tabs);
       chrome.tabs.sendMessage(tabs[0].id, { message: "I'm so proud of you." });
+      //used https://developer.chrome.com/docs/extensions/reference/notifications/ for help on syntax
+      chrome.notifications.create('', {
+        title: 'Good Work Today!!',
+        message: "I'm so proud of you.",
+        iconUrl: '/assets/end.png',
+        type: 'basic',
+      });
     });
     if (timer) {
       clearTimeout(timer);
       timer = null;
+    }
+  } else if (request.command === 'load') {
+    if (state === 'on') {
+      chrome.runtime.sendMessage({ status: 'progress' });
     }
   }
 });
@@ -86,7 +102,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     return;
   }
 
-  let clock = Math.floor(Math.random() * (900000 - 300000) + 300000);
+  let clock = Math.floor(Math.random() * (600000 - 180000) + 180000);
 
   // Only act on completed loading.
   if (changeInfo.status === 'complete') {
@@ -102,11 +118,12 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
           negativeMessages[Math.floor(Math.random() * negativeMessages.length)];
         console.log('Sending negative message:', message);
         chrome.tabs.sendMessage(tabId, { message: message });
+        //used https://developer.chrome.com/docs/extensions/reference/notifications/ for help on syntax
         chrome.notifications.create('', {
-          title: 'HOW DARE YOU',
-          message: 'Grandma has died....',
-          iconUrl: '/assets/bad2.png',
-          type: 'basic'
+          title: 'What are YOU doing?!',
+          message: message,
+          iconUrl: '/assets/bad.png',
+          type: 'basic',
         });
 
         // Clear any existing timer.
@@ -122,11 +139,12 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
             ];
           console.log('Sending negative message after 10 seconds:', message);
           chrome.tabs.sendMessage(tabId, { message: message });
+          //used https://developer.chrome.com/docs/extensions/reference/notifications/ for help on syntax
           chrome.notifications.create('', {
-            title: 'HOW DARE YOU',
-            message: 'Grandma has died....',
-            iconUrl: '/assets/bad2.png',
-            type: 'basic'
+            title: 'GET OFF ALREADY!!',
+            message: message,
+            iconUrl: '/assets/bad.png',
+            type: 'basic',
           });
         }, 10000); // 10 seconds
 
@@ -136,53 +154,55 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
             negativeMessages[
               Math.floor(Math.random() * negativeMessages.length)
             ];
-          console.log('Sending negative message:', message);
+          console.log('Sending negative message after 40 seconds:', message);
           chrome.tabs.sendMessage(tabId, { message: message });
+          //used https://developer.chrome.com/docs/extensions/reference/notifications/ for help on syntax
           chrome.notifications.create('', {
-            title: 'HOW DARE YOU',
-            message: 'Grandma has died....',
-            iconUrl: '/assets/bad2.png',
-            type: 'basic'
+            title: 'SIGH Do you HATE ME?!',
+            message: message,
+            iconUrl: '/assets/bad.png',
+            type: 'basic',
           });
-        }, 40000);
-
+        }, 40000); // 40 seconds
         // Send final message after 60 seconds
         setTimeout(() => {
           chrome.tabs.sendMessage(tabId, { message: 'Grandma has died....' });
           console.log('Grandma died message sent');
+          //used https://developer.chrome.com/docs/extensions/reference/notifications/ for help on syntax
           chrome.notifications.create('', {
-            title: 'HOW DARE YOU',
+            title: 'SHAME ON YOU!',
             message: 'Grandma has died....',
             iconUrl: '/assets/bad2.png',
-            type: 'basic'
+            type: 'basic',
           });
 
           // Speak the final message
           chrome.tts.speak('Grandma has died.');
-        }, 60000);
+        }, 60000); // 60 seconds
       }
     } else {
       // If the site is not a social media site and there's no timer currently set,
-      // set a timer to send a positive message after 60 seconds.
+      // set a timer to send a positive message
       if (!timer) {
         timer = setTimeout(() => {
           const message =
             affirmations[Math.floor(Math.random() * affirmations.length)];
           console.log('Sending positive message:', message);
           chrome.tabs.sendMessage(tabId, { message: message });
-          
+          //used https://developer.chrome.com/docs/extensions/reference/notifications/ for help on syntax
           chrome.notifications.create('', {
             title: 'Good Job!!',
             message: message,
             iconUrl: '/assets/good.png',
-            type: 'basic'
-          });      
+            type: 'basic',
+          });
           /*
           chrome.scripting.executeScript({
-            target: { tabId: tabId },
-            file: ['content.js'],
-          });
-          timer = null;*/
+              target: { tabId: tabId },
+              files: ['content.js'],
+            })
+            .then(() => console.log('injected'));*/
+          timer = null;
         }, clock);
       }
     }
