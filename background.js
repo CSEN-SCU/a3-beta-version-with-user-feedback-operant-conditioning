@@ -60,6 +60,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     //let store = sessionStorage.setItem("state","on");
     console.log('Start button clicked');
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      chrome.action.setIcon({ path: './assets/progressState.png' });
       chrome.tabs.sendMessage(tabs[0].id, {
         message: "Grandma is rooting for you. Let's start!",
       });
@@ -75,6 +76,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     state = 'off';
     console.log('Stop button clicked');
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      chrome.action.setIcon({ path: './assets/startState.png' });
       chrome.tabs.sendMessage(tabs[0].id, { message: "I'm so proud of you." });
       //used https://developer.chrome.com/docs/extensions/reference/notifications/ for help on syntax
       chrome.notifications.create('', {
@@ -131,14 +133,14 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
           clearTimeout(timer);
         }
 
-        // Set a timer to send another negative message after 10 seconds.
+        // Set a timer to send negative messages
         setTimeout(() => {
           if (currentSite === site) {
             message =
               negativeMessages[
                 Math.floor(Math.random() * negativeMessages.length)
               ];
-            console.log('Sending negative message after 10 seconds:', message);
+            console.log('Sending negative message after 1 minute:', message);
             chrome.tabs.sendMessage(tabId, { message: message });
             //used https://developer.chrome.com/docs/extensions/reference/notifications/ for help on syntax
             chrome.notifications.create('', {
@@ -148,7 +150,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
               type: 'basic',
             });
 
-            // Sending third negative message after 40 seconds
+            // Sending third negative message after 2 more minutes
             setTimeout(() => {
               if (currentSite === site) {
                 const message =
@@ -156,7 +158,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
                     Math.floor(Math.random() * negativeMessages.length)
                   ];
                 console.log(
-                  'Sending negative message after 40 seconds:',
+                  'Sending negative message after 2 more minutes: ',
                   message
                 );
                 chrome.tabs.sendMessage(tabId, { message: message });
@@ -168,7 +170,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
                   type: 'basic',
                 });
 
-                // Send final message after 60 seconds
+                // Send final message after 3 more minutes
                 setTimeout(() => {
                   if (currentSite === site) {
                     chrome.tabs.sendMessage(tabId, {
@@ -186,11 +188,11 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
                     // Speak the final message
                     chrome.tts.speak('Grandma has died.');
                   }
-                }, 60000); // 60 seconds
+                }, 180000); // 3 more minutes have passed
               }
-            }, 40000); // 40 seconds
+            }, 120000); // 2 more minutes have passed
           }
-        }, 10000); // 10 seconds
+        }, 60000); // 1 minute have passed
       }
     } else {
       // If the site is not a social media site and there's no timer currently set,
