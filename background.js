@@ -131,6 +131,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         // Clear any existing timer.
         if (timer) {
           clearTimeout(timer);
+          timer = null;
         }
 
         // Set a timer to send negative messages
