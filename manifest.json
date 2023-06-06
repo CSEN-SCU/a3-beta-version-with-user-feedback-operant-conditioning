@@ -1,20 +1,36 @@
 {
   "manifest_version": 3,
-  "name": "Hello Extensions",
+  "name": "Angry Grandma Notifications",
   "description": "COEN 296A A3",
   "version": "1.0",
   "action": {
-    "default_popup": "helloworld.html",
-    "default_icon": "helloworld.png"
+    "default_popup": "popup.html",
+    "default_icon": "./assets/startState.png"
   },
-  "content_scripts": [
-    {
-      "js": ["helloworld.js"],
-      "matches": ["https://www.youtube.com/*"]
-    }
-  ],
   "background": {
     "service_worker": "background.js"
   },
-  "permissions": ["storage", "activeTab", "scripting"]
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "notifications",
+    "tabs",
+    "tts"
+  ],
+  "host_permissions": [
+    "*://*.facebook.com/*",
+    "*://*.twitter.com/*",
+    "*://*.instagram.com/*",
+    "*://*.linkedin.com/*",
+    "https://www.youtube.com/*",
+    "https://*/*"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["sounds/death_sound.mp3"],
+      "matches": ["<all_urls>"],
+      "use_dynamic_url": false
+    }
+  ]
 }
